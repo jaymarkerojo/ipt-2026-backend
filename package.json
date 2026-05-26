@@ -4,8 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "build": "tsc && copyfiles -u 1 src/swagger.yaml dist/",
-    "start": "node dist/server.js",
+    "build": "npx tsc && npx copyfiles -u 1 src/swagger.yaml dist/",
     "start:dev": "nodemon --exec ts-node src/server.ts",
     "test": "ts-node test/users.test.ts"
   },
