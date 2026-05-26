@@ -4,7 +4,7 @@
         "port": 23347,
         "user": "avnadmin",
         "password": "",
-        "database": "defaultdb"
+        "database": "erojo_db"
     },
     "secret": "SUPER_SECRET_KEY",
     "emailFrom": "jaymarspogs@gmail.com",
