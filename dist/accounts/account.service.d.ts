@@ -1,0 +1,84 @@
+declare const _default: {
+    authenticate: typeof authenticate;
+    refreshToken: typeof refreshToken;
+    revokeToken: typeof revokeToken;
+    register: typeof register;
+    verifyEmail: typeof verifyEmail;
+    forgotPassword: typeof forgotPassword;
+    validateResetToken: typeof validateResetToken;
+    resetPassword: typeof resetPassword;
+    getAll: typeof getAll;
+    getById: typeof getById;
+    create: typeof create;
+    update: typeof update;
+    delete: typeof _delete;
+};
+export default _default;
+declare function authenticate({ email, password, ipAddress }: any): Promise<{
+    jwtToken: string;
+    refreshToken: any;
+    id: any;
+    title: any;
+    firstName: any;
+    lastName: any;
+    email: any;
+    role: any;
+    created: any;
+    updated: any;
+    isVerified: any;
+}>;
+declare function refreshToken({ token, ipAddress }: any): Promise<{
+    jwtToken: string;
+    refreshToken: any;
+    id: any;
+    title: any;
+    firstName: any;
+    lastName: any;
+    email: any;
+    role: any;
+    created: any;
+    updated: any;
+    isVerified: any;
+}>;
+declare function revokeToken({ token, ipAddress }: any): Promise<void>;
+declare function register(params: any, origin: any): Promise<void>;
+declare function verifyEmail({ token }: any): Promise<void>;
+declare function forgotPassword({ email }: any, origin: any): Promise<void>;
+declare function validateResetToken({ token }: any): Promise<any>;
+declare function resetPassword({ token, password }: any): Promise<void>;
+declare function getAll(): Promise<any>;
+declare function getById(id: any): Promise<{
+    id: any;
+    title: any;
+    firstName: any;
+    lastName: any;
+    email: any;
+    role: any;
+    created: any;
+    updated: any;
+    isVerified: any;
+}>;
+declare function create(params: any): Promise<{
+    id: any;
+    title: any;
+    firstName: any;
+    lastName: any;
+    email: any;
+    role: any;
+    created: any;
+    updated: any;
+    isVerified: any;
+}>;
+declare function update(id: any, params: any): Promise<{
+    id: any;
+    title: any;
+    firstName: any;
+    lastName: any;
+    email: any;
+    role: any;
+    created: any;
+    updated: any;
+    isVerified: any;
+}>;
+declare function _delete(id: any): Promise<void>;
+//# sourceMappingURL=account.service.d.ts.map

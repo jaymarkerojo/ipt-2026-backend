@@ -1,0 +1,18 @@
+{
+    "database": {
+        "host": "mysql-1081ff6e-jaymarspogs-ed99.h.aivencloud.com",
+        "port": 23347,
+        "user": "avnadmin",
+        "password": "AVNS_3erzmKP83gEi9umfGdg",
+        "database": "defaultdb"
+    },
+    "secret": "SUPER_SECRET_KEY",
+    "emailFrom": "jaymarspogs@gmail.com",
+    "smtpOptions": {
+        "service": "gmail",
+        "auth": {
+            "user": "jaymarktesting@gmail.com",
+            "pass": "gqyjhuyntncfbasg"
+        }
+    }
+}
