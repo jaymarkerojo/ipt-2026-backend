@@ -42,45 +42,63 @@ const promise_1 = __importDefault(require("mysql2/promise"));
 const sequelize_1 = require("sequelize");
 exports.db = {};
 async function initialize() {
-    // Use ENV variables (Render + production safe)
+    // ENV variables (safe for Render/Aiven)
     const host = process.env.DB_HOST;
     const port = Number(process.env.DB_PORT || 3306);
     const user = process.env.DB_USER;
     const password = process.env.DB_PASS;
     const database = process.env.DB_NAME;
+    // ✅ proper validation (fix: no unsafe !)
     if (!host || !user || !password || !database) {
         throw new Error("Missing database environment variables");
     }
-    // CREATE DATABASE IF NOT EXISTS
-    const connection = await promise_1.default.createConnection({
+    let connection;
+    try {
+        // CREATE DATABASE (safe connection)
+        connection = await promise_1.default.createConnection({
+            host,
+            port,
+            user,
+            password,
+        });
+        await connection.query(`CREATE DATABASE IF NOT EXISTS \`${database}\``);
+    }
+    catch (err) {
+        console.error("MySQL connection failed:", err);
+        throw err;
+    }
+    finally {
+        if (connection)
+            await connection.end();
+    }
+    // CONNECT SEQUELIZE (Aiven-safe)
+    const sequelize = new sequelize_1.Sequelize(database, user, password, {
         host,
         port,
-        user,
-        password
-    });
-    await connection.query(`CREATE DATABASE IF NOT EXISTS \`${database}\``);
-    await connection.end();
-    // CONNECT SEQUELIZE
-    const sequelize = new sequelize_1.Sequelize(database, user, password, {
         dialect: "mysql",
-        host,
-        port
+        logging: false, // cleaner logs (recommended)
     });
-    // IMPORT MODELS
-    const { default: userModel } = await Promise.resolve().then(() => __importStar(require("../users/user.model")));
-    const { default: accountModel } = await Promise.resolve().then(() => __importStar(require("../accounts/account.model")));
-    const { default: refreshTokenModel } = await Promise.resolve().then(() => __importStar(require("../accounts/refresh-token.model")));
-    // INIT MODELS
-    exports.db.User = userModel(sequelize);
-    exports.db.Account = accountModel(sequelize);
-    exports.db.RefreshToken = refreshTokenModel(sequelize);
-    // RELATIONSHIPS
-    exports.db.Account.hasMany(exports.db.RefreshToken, {
-        onDelete: "CASCADE"
-    });
-    exports.db.RefreshToken.belongsTo(exports.db.Account);
-    // SYNC DB
-    await sequelize.sync({ alter: true });
-    console.log("DATABASE INITIALIZED AND MODELS SYNCED");
+    try {
+        // IMPORT MODELS
+        const { default: userModel } = await Promise.resolve().then(() => __importStar(require("../users/user.model")));
+        const { default: accountModel } = await Promise.resolve().then(() => __importStar(require("../accounts/account.model")));
+        const { default: refreshTokenModel } = await Promise.resolve().then(() => __importStar(require("../accounts/refresh-token.model")));
+        // INIT MODELS
+        exports.db.User = userModel(sequelize);
+        exports.db.Account = accountModel(sequelize);
+        exports.db.RefreshToken = refreshTokenModel(sequelize);
+        // RELATIONSHIPS
+        exports.db.Account.hasMany(exports.db.RefreshToken, {
+            onDelete: "CASCADE",
+        });
+        exports.db.RefreshToken.belongsTo(exports.db.Account);
+        // SYNC DB
+        await sequelize.sync({ alter: true });
+        console.log("✅ DATABASE INITIALIZED AND MODELS SYNCED");
+    }
+    catch (err) {
+        console.error("Sequelize initialization failed:", err);
+        throw err;
+    }
 }
 //# sourceMappingURL=db.js.map
