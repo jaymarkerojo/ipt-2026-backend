@@ -77,18 +77,24 @@ async function register(params: any, origin: any) {
 
     const account = new db.Account(params);
 
+    // FIRST ACCOUNT = ADMIN
     const isFirstAccount = (await db.Account.count()) === 0;
     account.role = isFirstAccount ? Role.Admin : Role.User;
+
+    // GENERATE TOKEN
     account.verificationToken = randomTokenString();
 
+    // HASH PASSWORD
     account.passwordHash = await hash(params.password);
-    
-    // account.verified = Date.now(); // Removed auto-verification
 
+    // AUTO VERIFY ACCOUNT
+    account.verified = Date.now();
+
+    // SAVE ACCOUNT
     await account.save();
 
-    // send verification email
-    await sendVerificationEmail(account, origin);
+    // OPTIONAL EMAIL VERIFICATION
+    // await sendVerificationEmail(account, origin);
 }
 
 async function verifyEmail({ token }: any) {
